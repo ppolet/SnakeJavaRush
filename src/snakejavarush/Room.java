@@ -72,7 +72,7 @@ public class Room {
     }
     
     public void run(){
-        
+        int[][] screen = new int[20][20];
     }
     
     public void print(){
