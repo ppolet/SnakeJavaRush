@@ -107,7 +107,7 @@ public class Room {
     }
     
     public static void main(String[] args) {
-        Snake snake = new Snake(10, 10);
+        Snake snake = new Snake(11, 10);
         game = new Room(20, 20, snake);
         game.snake.setDirection(SnakeDirection.DOWN);
         game.createMouse();
