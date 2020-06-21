@@ -2,9 +2,7 @@
 
 package snakejavarush;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.KeyEvent;
 
 public class Room {
 
@@ -57,6 +55,7 @@ public class Room {
         int x = (int)(Math.random()*width);
         int y = (int)(Math.random()*height);
         mouse = new Mouse(x, y);
+        setMouse(mouse);
     }
     
     public void eatMouse(){
@@ -81,12 +80,48 @@ public class Room {
     }
     
     public void run(){
-        game.print();
-        //game.sleepG();
+        //наблюдатель за клавиатурой с JavaRush
+        KeyboardObserver keyboardObserver = new KeyboardObserver();
+        keyboardObserver.start();
+        
+        while(game.snake.isIsAlive()){
+            game.print();
+            game.sleepG();
+            
+            //были ли нажатия на клавиатуре
+            if (keyboardObserver.hasKeyEvents()){
+                KeyEvent ev = keyboardObserver.getEventFromTop();
+                
+                if (ev.getKeyChar() == 'q' || ev.getKeyChar() == 'Q'){
+                    System.out.println("-= EXIT FROM GAME =-");
+                    return;
+                }
+                
+                switch (ev.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        snake.setDirection(SnakeDirection.LEFT);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        snake.setDirection(SnakeDirection.RIGHT);
+                        break;
+                    case KeyEvent.VK_UP:
+                        snake.setDirection(SnakeDirection.UP);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        snake.setDirection(SnakeDirection.DOWN);
+                        break;
+                    default:
+                        break;
+                }
+                    
+            }
+            game.snake.move();
+        }
     }
     
     public void print(){
         int[][] screen = new int[width][height];
+        
         screen[snake.getX()][snake.getY()] = 2; // голова змеи, [0,0]
 
         if (snake.sections.size() > 1){
@@ -97,17 +132,21 @@ public class Room {
 
         screen[game.mouse.getX()][game.mouse.getY()] = 3; // мышь
         
+        //отображение игрового поля
         String [] symb = {".", "x", "X", "+"};
         for(int i=0; i<width; i++){
             for(int j = 0; j<height; j++){
-                System.out.print(symb[screen[i][j]]);
+                System.out.print(symb[screen[j][i]]);
             }
             System.out.println();
         }
+        
+        System.out.println();
+        System.out.println();
     }
     
     public static void main(String[] args) {
-        Snake snake = new Snake(11, 10);
+        Snake snake = new Snake(10, 10);
         game = new Room(20, 20, snake);
         game.snake.setDirection(SnakeDirection.DOWN);
         game.createMouse();
