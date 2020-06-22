@@ -8,7 +8,8 @@ public class Room {
 
     private int width, height;
     private Snake snake;
-    private Mouse mouse;
+    public final int mouseCount = 2;  //Number of mice
+    private final Mouse[] mouse = new Mouse[mouseCount];
 
     public static Room game;
 
@@ -36,12 +37,12 @@ public class Room {
         this.snake = snake;
     }
 
-    public Mouse getMouse() {
-        return mouse;
+    public Mouse getMouse(int num) {
+        return mouse[num];
     }
 
-    public void setMouse(Mouse mouse) {
-        this.mouse = mouse;
+    public void setMouse(int num, Mouse mouse) {
+        this.mouse[num] = mouse;
     }
     
     public Room(int width, int height, Snake snake){
@@ -51,15 +52,16 @@ public class Room {
         
     }
     
-    public void createMouse(){
+    public void createMouse(int num){
         int x = (int)(Math.random()*width);
         int y = (int)(Math.random()*height);
-        mouse = new Mouse(x, y);
-        setMouse(mouse);
+        game.setMouse(num, new Mouse(x, y));
+        //mouse[num] = new Mouse(x, y);
+        //setMouse(mouse);
     }
     
     public void eatMouse(){
-        createMouse();
+        createMouse(0);
     }
     
     public void sleepG(){
@@ -130,7 +132,7 @@ public class Room {
             }
         }
 
-        screen[game.mouse.getX()][game.mouse.getY()] = 3; // мышь
+        for (int i = 0; i<game.mouseCount; i++) screen[game.mouse[i].getX()][game.mouse[i].getY()] = 3; // мышь
         
         //отображение игрового поля
         String [] symb = {".", "x", "X", "+"};
@@ -149,7 +151,7 @@ public class Room {
         Snake snake = new Snake(10, 10);
         game = new Room(20, 20, snake);
         game.snake.setDirection(SnakeDirection.DOWN);
-        game.createMouse();
+        for (int i = 0; i<game.mouseCount; i++) game.createMouse(i);
         game.run();
     }
     

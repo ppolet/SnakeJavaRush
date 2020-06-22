@@ -71,14 +71,18 @@ public class Snake {
         }
 
         //Проверка, если змея встретила мышь, то съесть ее, иначе просто двигаться
-        if (isAlive)
-        if (newX == Room.game.getMouse().getX() && newY == Room.game.getMouse().getY()){
+        if (isAlive){
+            boolean flagEatMouse = false;
             sections.add(0, new SnakeSection(newX, newY));
-            Room.game.setMouse(null);
-            Room.game.eatMouse();
-        } else {
-            sections.add(0, new SnakeSection(newX, newY));
-            sections.remove(sections.size()-1); // удаляем последний сегмент хвоста
+            for (int i = 0; i<Room.game.mouseCount; i++){
+                if (newX == Room.game.getMouse(i).getX() && newY == Room.game.getMouse(i).getY()){
+                    flagEatMouse = true;
+                    Room.game.createMouse(i);
+                    break;
+                    //Room.game.eatMouse();
+                }
+            }
+            if (!flagEatMouse) sections.remove(sections.size()-1); // удаляем последний сегмент хвоста
         }
     }
     
